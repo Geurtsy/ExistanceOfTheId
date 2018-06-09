@@ -43,7 +43,8 @@ public class SceneChangeEffect : MonoBehaviour{
             yield return null;
         }
 
-
+        Destroy(_mask.gameObject);
+        Destroy(this);
         yield return null;
     }
 
