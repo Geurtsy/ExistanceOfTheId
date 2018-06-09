@@ -35,5 +35,4 @@ public class SceneChangeEffect : MonoBehaviour{
         Instantiate(_fastEffect, randomPositionOnScreen, transform.rotation);
         yield return null;
     }
-
 }
