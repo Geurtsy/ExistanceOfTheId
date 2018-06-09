@@ -51,9 +51,13 @@ public class RBManualMovement : Movement, IMove {
         float step = 0.5f;
 
         if (input > 0.0f)
-            step = _rb.velocity.x <= 0.0f ? 1.0f : 1.0f - input * vel / _walkSpeed / 2.0f;
+            step = vel <= 0.0f ? 1.0f : 1.0f - input * vel / _walkSpeed / 2.0f;
         else if (input < 0.0f)
-            step = _rb.velocity.x >= 0.0f ? 0.0f : Mathf.Abs(input * vel / _walkSpeed / 2.0f);
+            step = vel >= 0.0f ? 0.0f : Mathf.Abs(input * vel / _walkSpeed / 2.0f);
+
+        print(step);
+        print(Mathf.Lerp(-speed, speed, step));
+        print(_rb.velocity);
 
         return Mathf.Lerp(-speed, speed, step);
     }
