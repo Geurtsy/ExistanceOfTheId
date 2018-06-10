@@ -17,9 +17,20 @@ public class UIButtonPressIntro : MonoBehaviour
 
     [SerializeField] private float _turnOnDuration;
 
+    [SerializeField] private Image[] _powerGlow;
+    [SerializeField] private float _breathSpeed;
+
+    private bool _isRunning;
+
     public void StartOnSequence()
     {
-        StartCoroutine(OnSequence());
+        if(!_isRunning)
+        {
+            StartCoroutine(OnSequence());
+            StartCoroutine(ButtonBreath());
+
+            _isRunning = true;
+        }
     }
 
     private IEnumerator OnSequence()
@@ -53,4 +64,32 @@ public class UIButtonPressIntro : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator ButtonBreath()
+    {
+        var step = 1.0f;
+        var startColour = _powerGlow[0].color;
+
+        var neg = 1;
+
+        while(true)
+        {
+            step += (Time.deltaTime / _breathSpeed) * neg;
+
+            while(step > 0 && step < 1)
+            {
+                step += (Time.deltaTime / _breathSpeed) * neg;
+
+                foreach(Image img in _powerGlow)
+                {
+                    img.color = Color.Lerp(startColour, Color.white, step);
+                }
+
+                yield return null;
+            }
+
+            neg *= -1;
+
+            yield return null;
+        }
+    }
 }

@@ -21,14 +21,6 @@ public class PlayerController : MonoBehaviour {
 
         if(Mathf.Abs(inputX) > 0.0f || Mathf.Abs(inputY) > 0.0f)
         {
-            if(!_lightSpiritTrail.activeSelf)
-            {
-                _lightSpiritTrail.SetActive(true);
-                _runningSpiritTrail.SetActive(false);
-            }
-
-            _moveMech.CurrentSpeedState = Movement.SpeedState.WALK;
-
             if(Input.GetButton("Run"))
             {
                 _moveMech.CurrentSpeedState = Movement.SpeedState.RUN;
@@ -39,10 +31,15 @@ public class PlayerController : MonoBehaviour {
                     _lightSpiritTrail.SetActive(false);
                 }
             }
-
-            if(inputX < 0.0f)
+            else
             {
-                _lightSpiritTrail.transform.Rotate(new Vector3());
+                _moveMech.CurrentSpeedState = Movement.SpeedState.WALK;
+
+                if(!_lightSpiritTrail.activeSelf)
+                {
+                    _lightSpiritTrail.SetActive(true);
+                    _runningSpiritTrail.SetActive(false);
+                }
             }
 
             _moveMech.Move(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
