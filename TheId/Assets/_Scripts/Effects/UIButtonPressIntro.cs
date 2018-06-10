@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class UIButtonPressIntro : MonoBehaviour
 {
+    [SerializeField] private float _revealSpeed;
+    [SerializeField] private ParticleSystem _revealParticles;
+    [SerializeField] private TrailRenderer _revealTrail;
+
     [SerializeField] private int _slowFlickerAmount;
     [SerializeField] private float _slowFlickerLength;
     [SerializeField] private int _fastFlickerAmount;
@@ -24,10 +28,13 @@ public class UIButtonPressIntro : MonoBehaviour
 
     public void StartOnSequence()
     {
+        print(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 5)));
+
         if(!_isRunning)
         {
             StartCoroutine(OnSequence());
             StartCoroutine(ButtonBreath());
+            _revealParticles = _revealParticles.GetComponent<ParticleSystem>();
 
             _isRunning = true;
         }
@@ -35,33 +42,44 @@ public class UIButtonPressIntro : MonoBehaviour
 
     private IEnumerator OnSequence()
     {
-        float step = 0.0f;
-
-        for(int num = 0; num < _slowFlickerAmount; num++)
+        //float step = 0.0f;
+        while(true)
         {
-            _mask.color = new Color(0.0f, 0.0f, 0.0f, _onFlickerTransparency);
-            yield return new WaitForSeconds(_onFlickerLength);
-            _mask.color = new Color(0.0f, 0.0f, 0.0f, 1);
-            yield return new WaitForSeconds(_slowFlickerLength);
-        }
+            var width = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 5)).x;
+            var currentShape = _revealParticles.shape;
 
-        for(int num = 0; num < _fastFlickerAmount; num++)
-        {
-            _mask.color = new Color(0.0f, 0.0f, 0.0f, _onFlickerTransparency);
-            yield return new WaitForSeconds(_onFlickerLength);
-            _mask.color = new Color(0.0f, 0.0f, 0.0f, 1);
-            yield return new WaitForSeconds(_fastFlickerLength);
-        }
-
-        while(step < 1)
-        {
-            _mask.color = Color.Lerp(Color.black, Color.clear, step);
-            step += Time.deltaTime / _turnOnDuration;
+            _mask.rectTransform.Translate(transform.up * Time.deltaTime * _revealSpeed);
+            currentShape.radius = width;
+            _revealTrail.widthMultiplier = width * Camera.main.orthographicSize;
             yield return null;
         }
 
-        Destroy(_mask);
-        yield return null;
+        //for(int num = 0; num < _slowFlickerAmount; num++)
+        //{
+        //    _mask.color = new Color(0.0f, 0.0f, 0.0f, _onFlickerTransparency);
+        //    yield return new WaitForSeconds(_onFlickerLength);
+        //    _mask.color = new Color(0.0f, 0.0f, 0.0f, 1);
+        //    yield return new WaitForSeconds(_slowFlickerLength);
+        //}
+
+        //for(int num = 0; num < _fastFlickerAmount; num++)
+        //{
+        //    _mask.color = new Color(0.0f, 0.0f, 0.0f, _onFlickerTransparency);
+        //    yield return new WaitForSeconds(_onFlickerLength);
+        //    _mask.color = new Color(0.0f, 0.0f, 0.0f, 1);
+        //    yield return new WaitForSeconds(_fastFlickerLength);
+        //}
+
+        //while(step < 1)
+        //{
+        //    _mask.color = Color.Lerp(Color.black, Color.clear, step);
+        //    step += Time.deltaTime / _turnOnDuration;
+        //    yield return null;
+        //}
+
+        //Destroy(_mask);
+
+        //yield return null;
     }
 
     private IEnumerator ButtonBreath()
