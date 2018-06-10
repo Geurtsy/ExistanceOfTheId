@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+    [SerializeField] private Transform _trailFolder;
     [SerializeField] private GameObject _lightSpiritTrail;
     [SerializeField] private GameObject _runningSpiritTrail;
     private IMove _moveMech;
@@ -15,7 +16,10 @@ public class PlayerController : MonoBehaviour {
 
     private void Update()
     {
-        if(Mathf.Abs(Input.GetAxisRaw("Horizontal")) > 0.0f || Mathf.Abs(Input.GetAxisRaw("Vertical")) > 0.0f)
+        float inputX = Input.GetAxis("Horizontal");
+        float inputY = Input.GetAxis("Vertical");
+
+        if(Mathf.Abs(inputX) > 0.0f || Mathf.Abs(inputY) > 0.0f)
         {
             if(!_lightSpiritTrail.activeSelf)
             {
@@ -36,6 +40,10 @@ public class PlayerController : MonoBehaviour {
                 }
             }
 
+            if(inputX < 0.0f)
+            {
+                _lightSpiritTrail.transform.Rotate(new Vector3());
+            }
 
             _moveMech.Move(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
         }
